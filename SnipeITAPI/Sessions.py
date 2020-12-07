@@ -17,7 +17,7 @@ class Sessions(object):
         self.headers={
             'Authorization': 'Bearer {0}'.format(token),
             "Accept": "application/json",
-            "Content-Type": "application/x-www-form-urlencoded"}
+            "Content-Type": "application/json"}
         self.session.headers.update(self.headers)
         self.session.mount(
             'https://',
@@ -32,7 +32,7 @@ class Sessions(object):
     def __exit__(self,exec_types,exec_val,exc_tb):
         self.session.close()
 
-    def maintenances_get(self,params):
+    def maintenances_get(self,params={}):
         """Get list of Maintenances
             
             Arguments:
@@ -41,13 +41,43 @@ class Sessions(object):
                 requests object
         """
         
-        uri = 'api/v1/maintenances'
+        uri = '/api/v1/maintenances'
         url = self.server + uri
         results = self.session.get(
             url,
             params=params,
             timeout=5
-        if results.ok
+            )
+        if results.ok:
+            return results
+        else:
+            SnipeITErrorHandler(results)
+
+    def maintenances_patch(self,data):
+        """Get list of Maintenances
+            
+            Arguments:
+                params {dictionary} --
+                {
+                    'asset_id':'',#int
+                    'supplier_id':'',#int
+                    'asset_maintenance_type':'',#Has to Match drop down list in Snipe-IT
+                    'start_date':'',#Date YYYY-MM-DD
+                    'completion_date':'',#Date YYYY-MM-DD
+                    'title':''#String
+                }
+            Returns:
+                requests object
+        """
+        
+        uri = '/api/v1/maintenances'
+        url = self.server + uri
+        results = self.session.post(
+            url,
+            data=data,
+            timeout=5
+            )
+        if results.ok and not results.json().get('status') == 'error':
             return results
         else:
             SnipeITErrorHandler(results)
