@@ -53,7 +53,7 @@ class Sessions(object):
         else:
             SnipeITErrorHandler(results)
 
-    def maintenances_patch(self,data):
+    def maintenances_post(self,data):
         """Get list of Maintenances
             
             Arguments:
@@ -81,4 +81,89 @@ class Sessions(object):
             return results
         else:
             SnipeITErrorHandler(results)
+
+    def assets_get_byserial(self,serial,params={}):
+        """Get asset by serial
             
+            Arguments:
+                serial {string} --
+                params {dictionary} --
+            Returns:
+                requests object
+        """
+        
+        uri = '/api/v1/hardware/byserial/{0}'.format(serial)
+        url = self.server + uri
+        results = self.session.get(
+            url,
+            params=params,
+            timeout=5
+            )
+        if results.ok:
+            return results
+        else:
+            SnipeITErrorHandler(results)
+    
+    def asset_patch(self,asset_id,data):
+        """Patch an Asset
+            
+            Arguments:
+                id {int} --
+                data {dictionary} --
+            Returns:
+                requests object
+        """
+        
+        uri = '/api/v1/hardware/{0}'.format(asset_id)
+        url = self.server + uri
+        results = self.session.patch(
+            url,
+            data=data,
+            timeout=5,
+            )
+        if results.ok and not results.json().get('status') == 'error':
+            return results
+        else:
+            SnipeITErrorHandler(results)
+    
+    def custom_fieldsets_get(self,params={}):
+        """Get list of Custom Fieldsets
+            
+            Arguments:
+                params {dictionary} --
+            Returns:
+                requests object
+        """
+        
+        uri = '/api/v1/fields'
+        url = self.server + uri
+        results = self.session.get(
+            url,
+            params=params,
+            timeout=5
+            )
+        if results.ok:
+            return results
+        else:
+            SnipeITErrorHandler(results)
+    
+    def custom_fieldsets_post(self,data):
+        """post an Asset
+            
+            Arguments:
+                data {dictionary} --
+            Returns:
+                requests object
+        """
+        
+        uri = '/api/v1/fieldsets'
+        url = self.server + uri
+        results = self.session.post(
+            url,
+            data=data,
+            timeout=5
+            )
+        if results.ok and not results.json().get('status') == 'error':
+            return results
+        else:
+            SnipeITErrorHandler(results)
