@@ -1,5 +1,5 @@
 # SnipeIT API
-Intended to be a Structured way to interface with Snipe-IT's API.\
+Intended to be a Structured way to interface with Snipe-IT's API.
 
 # Usage
 Open a context manager so the requests session can be reused etc
