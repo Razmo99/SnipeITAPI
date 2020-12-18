@@ -48,7 +48,7 @@ class Sessions(object):
             params=params,
             timeout=5
             )
-        if results.ok:
+        if results.ok and not results.json().get('status') == 'error':
             return results
         else:
             SnipeITErrorHandler(results)
@@ -99,7 +99,7 @@ class Sessions(object):
             params=params,
             timeout=5
             )
-        if results.ok:
+        if results.ok and not results.json().get('status') == 'error':
             return results
         else:
             SnipeITErrorHandler(results)
@@ -142,7 +142,7 @@ class Sessions(object):
             params=params,
             timeout=5
             )
-        if results.ok:
+        if results.ok and not results.json().get('status') == 'error':
             return results
         else:
             SnipeITErrorHandler(results)
