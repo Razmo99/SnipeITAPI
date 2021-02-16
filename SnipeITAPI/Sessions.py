@@ -103,6 +103,34 @@ class Sessions(object):
             return results
         else:
             SnipeITErrorHandler(results)
+
+    def assets_get(self,params={}):
+        """Get assets
+            
+            Arguments:
+                params {dictionary} --
+            Returns:
+                requests object
+        """
+        limit = params.get('limit') or 500
+        params['offset'], current_offset = 0, 0
+        total = 500
+        uri = '/api/v1/hardware'
+        url = self.server + uri
+        while ((limit*current_offset) <= total):
+            page = self.session.get(
+                url,
+                params=params,
+                timeout=5
+                )
+            if page.json().get('total'):
+                total=int(page.json().get('total'))
+            current_offset += 1
+            params['offset']=current_offset
+            if page.ok and not page.json().get('status') == 'error':
+                yield page
+            else:
+                SnipeITErrorHandler(page)            
     
     def asset_patch(self,asset_id,data):
         """Patch an Asset
@@ -167,3 +195,29 @@ class Sessions(object):
             return results
         else:
             SnipeITErrorHandler(results)
+
+    def categories_get(self,params={}):
+        """Get Categories
+
+            Returns:
+                requests object
+        """
+        limit = params.get('limit') or 500
+        params['offset'], current_offset = 0, 0
+        total = 500
+        uri = '/api/v1/categories'
+        url = self.server + uri
+        while ((limit*current_offset) <= total):
+            page = self.session.get(
+                url,
+                params=params,
+                timeout=5
+                )
+            if page.json().get('total'):
+                total=int(page.json().get('total'))
+            current_offset += 1
+            params['offset']=current_offset
+            if page.ok and not page.json().get('status') == 'error':
+                yield page
+            else:
+                SnipeITErrorHandler(page)   
