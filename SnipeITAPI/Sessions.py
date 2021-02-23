@@ -117,7 +117,7 @@ class Sessions(object):
         total = 500
         uri = '/api/v1/hardware'
         url = self.server + uri
-        while ((limit*current_offset) <= total):
+        while current_offset <= total:
             page = self.session.get(
                 url,
                 params=params,
@@ -125,12 +125,12 @@ class Sessions(object):
                 )
             if page.json().get('total'):
                 total=int(page.json().get('total'))
-            current_offset += 1
+            current_offset += limit
             params['offset']=current_offset
             if page.ok and not page.json().get('status') == 'error':
                 yield page
             else:
-                SnipeITErrorHandler(page)            
+                SnipeITErrorHandler(page)             
     
     def asset_patch(self,asset_id,data):
         """Patch an Asset
@@ -220,4 +220,54 @@ class Sessions(object):
             if page.ok and not page.json().get('status') == 'error':
                 yield page
             else:
-                SnipeITErrorHandler(page)   
+                SnipeITErrorHandler(page)
+
+    def users_get_by_id(self, id, params={}):
+        """Get user by id
+            
+            Arguments:
+                id {int} --
+                params {dictionary} --
+            Returns:
+                requests object
+        """
+        
+        uri = '/api/v1/users/{0}'.format(str(id))
+        url = self.server + uri
+        results = self.session.get(
+            url,
+            params=params,
+            timeout=5
+            )
+        if results.ok and not results.json().get('status') == 'error':
+            return results
+        else:
+            SnipeITErrorHandler(results)    
+
+    def users_get(self,params={}):
+        """Get assets
+            
+            Arguments:
+                params {dictionary} --
+            Returns:
+                requests object
+        """
+        limit = params.get('limit') or 500
+        params['offset'], current_offset = 0, 0
+        total = 500
+        uri = '/api/v1/users'
+        url = self.server + uri
+        while current_offset <= total:
+            page = self.session.get(
+                url,
+                params=params,
+                timeout=5
+                )
+            if page.json().get('total'):
+                total=int(page.json().get('total'))
+            current_offset += limit
+            params['offset']=current_offset
+            if page.ok and not page.json().get('status') == 'error':
+                yield page
+            else:
+                SnipeITErrorHandler(page) 
